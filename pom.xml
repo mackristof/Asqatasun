@@ -186,7 +186,6 @@
                 <version>${maven-surefire-plugin.version}</version>
                 <configuration> 
 <!--                    <skipTests>true</skipTests>-->
-                    <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
             <plugin>
