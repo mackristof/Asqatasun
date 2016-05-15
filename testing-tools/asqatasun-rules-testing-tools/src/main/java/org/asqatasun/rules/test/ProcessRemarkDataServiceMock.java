@@ -40,6 +40,7 @@ import java.util.Collection;
  */
 public class ProcessRemarkDataServiceMock implements ProcessRemarkDataService{
 
+    @Autowired
     private SourceCodeRemarkFactory sourceCodeRemarkFactory;
     @Autowired
     public void setSourceCodeRemarkFactory(SourceCodeRemarkFactory sourceCodeRemarkFactory) {
