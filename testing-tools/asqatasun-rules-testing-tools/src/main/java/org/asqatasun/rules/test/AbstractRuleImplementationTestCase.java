@@ -25,16 +25,29 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.log4j.Logger;
+import org.asqatasun.entity.audit.factory.AuditFactory;
+import org.asqatasun.entity.audit.factory.ContentFactory;
+import org.asqatasun.entity.parameterization.factory.ParameterElementFactory;
+import org.asqatasun.entity.parameterization.factory.ParameterFactory;
+import org.asqatasun.entity.parameterization.factory.ParameterFamilyFactory;
+import org.asqatasun.entity.reference.factory.TestFactory;
+import org.asqatasun.entity.subject.factory.WebResourceFactory;
+import org.dbunit.DBTestCase;
+import org.dbunit.PropertiesBasedJdbcDatabaseTester;
+import org.dbunit.database.DatabaseConfig;
+import org.dbunit.dataset.IDataSet;
+import org.dbunit.dataset.xml.FlatXmlDataSetBuilder;
+import org.dbunit.operation.DatabaseOperation;
 import org.asqatasun.contentadapter.util.URLIdentifier;
 import org.asqatasun.contentadapter.util.URLIdentifierFactory;
-import org.asqatasun.entity.audit.*;
-import org.asqatasun.entity.factory.audit.AuditFactory;
-import org.asqatasun.entity.factory.audit.ContentFactory;
-import org.asqatasun.entity.factory.parameterization.ParameterElementFactory;
-import org.asqatasun.entity.factory.parameterization.ParameterFactory;
-import org.asqatasun.entity.factory.parameterization.ParameterFamilyFactory;
-import org.asqatasun.entity.factory.reference.TestFactory;
-import org.asqatasun.entity.factory.subject.WebResourceFactory;
+import org.asqatasun.entity.audit.Audit;
+import org.asqatasun.entity.audit.Content;
+import org.asqatasun.entity.audit.EvidenceElement;
+import org.asqatasun.entity.audit.ProcessRemark;
+import org.asqatasun.entity.audit.ProcessResult;
+import org.asqatasun.entity.audit.SSP;
+import org.asqatasun.entity.audit.SourceCodeRemark;
+import org.asqatasun.entity.audit.TestSolution;
 import org.asqatasun.entity.parameterization.Parameter;
 import org.asqatasun.entity.parameterization.ParameterElement;
 import org.asqatasun.entity.parameterization.ParameterFamily;
@@ -53,6 +66,7 @@ import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.xml.FlatXmlDataSetBuilder;
 import org.dbunit.operation.DatabaseOperation;
 import org.springframework.context.ApplicationContext;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import javax.imageio.ImageIO;
@@ -72,42 +86,45 @@ public abstract class AbstractRuleImplementationTestCase extends DBTestCase {
     private static final Logger LOGGER = Logger.getLogger(AbstractRuleImplementationTestCase.class);
     private final String applicationContextFilePath = "context/application-context.xml";
     
-    private static ApplicationContext APPLICATION_CONTEXT;
-    private static TestFactory TEST_FACTORY;
-    private static ContentLoaderService CONTENT_LOADER_SERVICE;
-    private static ContentAdapterService CONTENT_ADAPTER_SERVICE;
-    private static ProcessorService PROCESSOR_SERVICE;
-    private static ConsolidatorService CONSOLIDATOR_SERVICE;
-    
-    public ConsolidatorService getConsolidatorService() {
-        return CONSOLIDATOR_SERVICE;
+    private ApplicationContext applicationContext;
+    @Autowired
+    private TestFactory testFactory;
+    @Autowired
+    private ContentLoaderService contentLoaderService;
+    @Autowired
+    private ContentAdapterService contentAdapterService;
+    @Autowired
+    private ProcessorService processorService;
+    @Autowired
+    private ConsolidatorService consolidatorService;
+    @Autowired
+    private ContentFactory contentFactory;
+    @Autowired
+    private ParameterFactory parameterFactory;
+    @Autowired
+    private ParameterElementFactory parameterElementFactory;
+    @Autowired
+    private ParameterFamilyFactory parameterFamilyFactory;
+    @Autowired
+    private AuditFactory auditFactory;
+    @Autowired
+    private URLIdentifierFactory urlIdentifierFactory;
+    private URLIdentifier urlIdentifier;
+
+    @Autowired
+    private WebResourceFactory webResourceFactory;
+    public WebResourceFactory getWebResourceFactory() {
+        return webResourceFactory;
     }
-    
-    private static AuditFactory AUDIT_FACTORY;
-    private static URLIdentifier URL_IDENTIFIER;
+
     private final Map<WebResource, List<Content>> contentMap = new HashMap<>();
     private final Map<WebResource, List<String>> relatedContentMap = new HashMap<>();
-    public Map<WebResource, List<String>> getRelatedContentMap() {
-        return relatedContentMap;
-    }
+
     private final List<Test> testList = new ArrayList<>();
-    public List<Test> getTestList() {
-        return testList;
-    }
+
     private final Map<WebResource, Collection<ProcessResult>> grossResultMap = new HashMap<>();
-    public Map<WebResource, Collection<ProcessResult>> getGrossResultMap() {
-        return grossResultMap;
-    }
-    
+
     private final Map<WebResource, ProcessResult> netResultMap = new HashMap<>();
-    private static WebResourceFactory WEB_RESOURCE_FACTORY;
-    public WebResourceFactory getWebResourceFactory() {
-        return WEB_RESOURCE_FACTORY;
-    }
-    private static ContentFactory CONTENT_FACTORY;
-    private static ParameterFactory PARAMETER_FACTORY;
-    private static ParameterElementFactory PARAMETER_ELEMENT_FACTORY;
-    private static ParameterFamilyFactory PARAMETER_FAMILY_FACTORY;
     
     private String ruleImplementationClassName;
     public void setRuleImplementationClassName(String ruleImplementationClassName) {
@@ -152,42 +169,6 @@ public abstract class AbstractRuleImplementationTestCase extends DBTestCase {
     public String getInputDataFileName() {
         return inputDataFileName;
     }
-
-    /**
-     * The referential of rules
-     */
-    private boolean upperCaseTags = false;
-    public boolean getUpperCaseTags() {
-        return upperCaseTags;
-    }
-
-    public void setUpperCaseTags(boolean upperCaseTags) {
-        this.upperCaseTags = upperCaseTags;
-    }
-    
-    /**
-     * 
-     * @param testName
-     * @param inputDataFileName
-     * @param testcasesFilePath
-     * @param upperCaseTags
-     */
-    public AbstractRuleImplementationTestCase(
-            String testName,
-            String inputDataFileName,
-            String testcasesFilePath, 
-            boolean upperCaseTags) {
-        super(testName);
-        this.testcasesFilePath = testcasesFilePath;
-        this.inputDataFileName = inputDataFileName;
-        this.upperCaseTags = upperCaseTags;
-        initialize();
-        setUpRuleImplementationClassName();
-        setUpWebResourceMap();
-        setUpClass();
-        setUpParameterMap();
-        setUpDatabase();
-    }
     
     /**
      * 
@@ -216,28 +197,28 @@ public abstract class AbstractRuleImplementationTestCase extends DBTestCase {
         // only once for a given referential. That's why all the applicative
         // class attributes are defined as static. Otherwise, the context is 
         // fully loaded, and the test spend at least 200ms for nothing
-        if (APPLICATION_CONTEXT == null) {
-            APPLICATION_CONTEXT = new ClassPathXmlApplicationContext(applicationContextFilePath);
+        if (applicationContext == null) {
+            applicationContext = new ClassPathXmlApplicationContext(applicationContextFilePath);
             
-            WEB_RESOURCE_FACTORY = (WebResourceFactory) APPLICATION_CONTEXT.getBean("webResourceFactory");
-            CONTENT_FACTORY = (ContentFactory) APPLICATION_CONTEXT.getBean("contentFactory");
-            PARAMETER_FACTORY = (ParameterFactory) APPLICATION_CONTEXT.getBean("parameterFactory");
-            PARAMETER_ELEMENT_FACTORY = (ParameterElementFactory) APPLICATION_CONTEXT.getBean("parameterElementFactory");
-            PARAMETER_FAMILY_FACTORY = (ParameterFamilyFactory) APPLICATION_CONTEXT.getBean("parameterFamilyFactory");
-            AUDIT_FACTORY = (AuditFactory) APPLICATION_CONTEXT.getBean("auditFactory");
-            TEST_FACTORY = (TestFactory) APPLICATION_CONTEXT.getBean("testFactory");
-
-            CONTENT_LOADER_SERVICE = (ContentLoaderService) APPLICATION_CONTEXT.getBean("contentLoaderService");
-            CONTENT_ADAPTER_SERVICE = (ContentAdapterService) APPLICATION_CONTEXT.getBean("contentAdapterService");
-            PROCESSOR_SERVICE = (ProcessorService) APPLICATION_CONTEXT.getBean("processorService");
-            CONSOLIDATOR_SERVICE = (ConsolidatorService) APPLICATION_CONTEXT.getBean("consolidatorService");
+//            webResourceFactory = (WebResourceFactory) applicationContext.getBean("webResourceFactory");
+//            contentFactory = (ContentFactory) applicationContext.getBean("contentFactory");
+//            parameterFactory = (ParameterFactory) applicationContext.getBean("parameterFactory");
+//            parameterElementFactory = (ParameterElementFactory) applicationContext.getBean("parameterElementFactory");
+//            parameterFamilyFactory = (ParameterFamilyFactory) applicationContext.getBean("parameterFamilyFactory");
+//            auditFactory = (AuditFactory) applicationContext.getBean("auditFactory");
+//            testFactory = (TestFactory) applicationContext.getBean("testFactory");
+//
+//            contentLoaderService = (ContentLoaderService) applicationContext.getBean("contentLoaderService");
+//            contentAdapterService = (ContentAdapterService) applicationContext.getBean("contentAdapterService");
+//            processorService = (ProcessorService) applicationContext.getBean("processorService");
+//            consolidatorService = (ConsolidatorService) applicationContext.getBean("consolidatorService");
             
-            URL_IDENTIFIER = ((URLIdentifierFactory) APPLICATION_CONTEXT.getBean("urlIdentifierFactory")).create();
-            if (upperCaseTags) {
-                HTMLCleanerFactoryImpl htmlCleanerFactory = 
-                        (HTMLCleanerFactoryImpl) APPLICATION_CONTEXT.getBean("htmlCleanerFactory");
-                htmlCleanerFactory.setRemoveLowerCaseTags(upperCaseTags);
-            }
+            urlIdentifier = urlIdentifierFactory.create();
+//            if (upperCaseTags) {
+//                HTMLCleanerFactoryImpl htmlCleanerFactory =
+//                        (HTMLCleanerFactoryImpl) applicationContext.getBean("htmlCleanerFactory");
+//                htmlCleanerFactory.setRemoveLowerCaseTags(upperCaseTags);
+//            }
         }
     }
 
@@ -272,7 +253,7 @@ public abstract class AbstractRuleImplementationTestCase extends DBTestCase {
      */
     protected void addWebResource(String webResourceName, Parameter... parameters) {
         getWebResourceMap().put(webResourceName,
-                getWebResourceFactory().createPage(
+                webResourceFactory.createPage(
                 getTestcasesFilePath() + getRefKey()+"/"+getClassName()+"/"+webResourceName+".html"));
         for (Parameter param : parameters) {
             addParameterToParameterMap(webResourceName,param);
@@ -304,7 +285,7 @@ public abstract class AbstractRuleImplementationTestCase extends DBTestCase {
      * 
      */
     private void setUpClass() {
-        Test test = TEST_FACTORY.create();
+        Test test = testFactory.create();
         test.setCode(this.getName());
         test.setRuleClassName(ruleImplementationClassName);
         test.setRuleArchiveName("MockArchiveName");
@@ -313,7 +294,7 @@ public abstract class AbstractRuleImplementationTestCase extends DBTestCase {
         LOGGER.info("setUpClass()");
         for (WebResource webResource : webResourceMap.values()) {
             LOGGER.info("webResource.getURL() " + webResource.getURL());
-            contentMap.put(webResource, CONTENT_LOADER_SERVICE.loadContent(webResource));
+            contentMap.put(webResource, contentLoaderService.loadContent(webResource));
             
             if (relatedContentMap.get(webResource) != null) {
                 for (String contentUrl : relatedContentMap.get(webResource)) {
@@ -321,16 +302,16 @@ public abstract class AbstractRuleImplementationTestCase extends DBTestCase {
                         SSP ssp = (SSP) contentMap.get(webResource).get(0);
                         try {
                             src = new URL(ssp.getURI());
-                            URL_IDENTIFIER.setUrl(src);
+                            urlIdentifier.setUrl(src);
                         } catch (MalformedURLException ex) {
                             LOGGER.error(ex);
                         }
-                        URL_IDENTIFIER.setUrl(src);
+                        urlIdentifier.setUrl(src);
                         String relatedContentUrl =
-                                URL_IDENTIFIER.resolve(contentUrl).toExternalForm();
+                                urlIdentifier.resolve(contentUrl).toExternalForm();
                         if (isContentCss(relatedContentUrl)) {
                             ssp.addRelatedContent(
-                                    CONTENT_FACTORY.createStylesheetContent(
+                                    contentFactory.createStylesheetContent(
                                     new Date(),
                                     relatedContentUrl,
                                     ssp,
@@ -338,7 +319,7 @@ public abstract class AbstractRuleImplementationTestCase extends DBTestCase {
                                     200));
                         } else {
                             ssp.addRelatedContent(
-                                    CONTENT_FACTORY.createImageContent(
+                                    contentFactory.createImageContent(
                                     new Date(),
                                     relatedContentUrl,
                                     ssp,
@@ -348,14 +329,14 @@ public abstract class AbstractRuleImplementationTestCase extends DBTestCase {
                     }
                 }
             }
-            contentMap.put(webResource, (List<Content>)CONTENT_ADAPTER_SERVICE.adaptContent((contentMap.get(webResource))));
+            contentMap.put(webResource, (List<Content>) contentAdapterService.adaptContent((contentMap.get(webResource))));
         }
     }
 
     protected Collection<ProcessResult> process(String webResourceKey) {
         LOGGER.debug(this + "::process(\"" + webResourceKey + "\")");
         WebResource webResource = webResourceMap.get(webResourceKey);
-        Collection<ProcessResult> grossResultList = PROCESSOR_SERVICE.process(contentMap.get(webResource), testList);
+        Collection<ProcessResult> grossResultList = processorService.process(contentMap.get(webResource), testList);
         for (Content content : contentMap.get(webResource)) {
             LOGGER.debug(content.getURI());
         }
@@ -371,7 +352,7 @@ public abstract class AbstractRuleImplementationTestCase extends DBTestCase {
     public ProcessResult consolidate(String webResourceKey) {
         LOGGER.debug(this + "::consolidate(\"" + webResourceKey + "\")");
         WebResource webResource = webResourceMap.get(webResourceKey);
-        ProcessResult netResult = CONSOLIDATOR_SERVICE.consolidate(grossResultMap.get(webResource), testList).iterator().next();
+        ProcessResult netResult = consolidatorService.consolidate(grossResultMap.get(webResource), testList).iterator().next();
         netResultMap.put(webResource, netResult);
         return netResult;
     }
@@ -516,12 +497,12 @@ public abstract class AbstractRuleImplementationTestCase extends DBTestCase {
      * @return 
      */
     protected Parameter createParameter(String familyValue, String elementValue, String value) {
-        ParameterFamily parameterFamily = PARAMETER_FAMILY_FACTORY.create();
+        ParameterFamily parameterFamily = parameterFamilyFactory.create();
         parameterFamily.setParameterFamilyCode(familyValue);
-        ParameterElement parameterElement = PARAMETER_ELEMENT_FACTORY.create();
+        ParameterElement parameterElement = parameterElementFactory.create();
         parameterElement.setParameterFamily(parameterFamily);
         parameterElement.setParameterElementCode(elementValue);
-        Parameter parameter = PARAMETER_FACTORY.create();
+        Parameter parameter = parameterFactory.create();
         parameter.setValue(value);
         parameter.setParameterElement(parameterElement);
         return parameter;
@@ -547,7 +528,7 @@ public abstract class AbstractRuleImplementationTestCase extends DBTestCase {
      */
     private void associateParameterToSSP() {
         for (Map.Entry<String, WebResource> entry : webResourceMap.entrySet()) {
-            Audit audit = AUDIT_FACTORY.create();
+            Audit audit = auditFactory.create();
             if (parameterMap.containsKey(entry.getKey())) {
                 for (Parameter param : parameterMap.get(entry.getKey())) {
                     audit.addParameter(param);
