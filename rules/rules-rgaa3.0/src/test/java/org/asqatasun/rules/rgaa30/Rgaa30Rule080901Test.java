@@ -81,12 +81,36 @@ public class Rgaa30Rule080901Test extends Rgaa30RuleImplementationTestCase {
         processResult = processPageTest("Rgaa30.Test.08.09.01-2Failed-02");
         checkResultIsFailed(processResult, 16, 1);
         checkRemarkIsPresent(
-            processResult,
-            TestSolution.FAILED,
-            RemarkMessageStore.LINK_WITHOUT_TARGET_MSG,
-            HtmlElementStore.A_ELEMENT,
-            1);
-
+                processResult,
+                TestSolution.FAILED,
+                RemarkMessageStore.LINK_WITHOUT_TARGET_MSG,
+                HtmlElementStore.A_ELEMENT,
+                1);        
+        
+        //----------------------------------------------------------------------
+        //---------------------------2Failed-03---------------------------------
+        //----------------------------------------------------------------------
+        processResult = processPageTest("Rgaa30.Test.08.09.01-2Failed-03");
+        checkResultIsPreQualified(processResult, 4, 1);
+        checkRemarkIsPresent(
+                processResult,
+                TestSolution.NEED_MORE_INFO,
+                getMessageKey(RemarkMessageStore.NO_PATTERN_DETECTED_MSG),
+                HtmlElementStore.FIELDSET_ELEMENT,
+                1);        
+        
+        //----------------------------------------------------------------------
+        //---------------------------2Failed-04---------------------------------
+        //----------------------------------------------------------------------
+        processResult = processPageTest("Rgaa30.Test.08.09.01-2Failed-04");
+        checkResultIsPreQualified(processResult, 4, 1);
+        checkRemarkIsPresent(
+                processResult,
+                TestSolution.NEED_MORE_INFO,
+                getMessageKey(RemarkMessageStore.NO_PATTERN_DETECTED_MSG),
+                HtmlElementStore.FIELDSET_ELEMENT,
+                1);        
+        
         //----------------------------------------------------------------------
         //---------------------------3NMI-03---------------------------------
         //----------------------------------------------------------------------
