@@ -1,6 +1,9 @@
 <%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+
+<spring:eval var="asqatasunVersion" expression="@propertiesFactoryBean.asqatasunVersion"/>
 
         <footer>
             <jsp:useBean id="now" class="java.util.Date" scope="page" />
