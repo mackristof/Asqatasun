@@ -665,3 +665,5 @@ UPDATE TEST SET `No_Process`=b'0' WHERE Cd_Test='rgaa32017-1-1-1';
 
 UPDATE TEST SET `No_Process`=b'0' WHERE Cd_Test='rgaa32017-2-1-1';
 
+UPDATE TEST SET `No_Process`=b'0' WHERE Cd_Test='rgaa32017-2-2-1';
+
