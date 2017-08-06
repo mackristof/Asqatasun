@@ -661,3 +661,5 @@ INSERT IGNORE INTO `PARAMETER` (`Id_Parameter_Element`, `Parameter_Value`, `Is_D
 (5, 'Rgaa32017;LEVEL_2', b'0'),
 (5, 'Rgaa32017;LEVEL_3', b'0');
 
+UPDATE TEST SET `No_Process`=b'0' WHERE Cd_Test='rgaa32017-1-1-1';
+
