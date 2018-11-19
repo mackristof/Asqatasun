@@ -1,6 +1,6 @@
 # CHANGELOG
 
-Asqatasun 4.1.0, 2018-0x-xx
+Asqatasun 4.1.0, 2018-1x-xx
 ---------------------------
 
 - thanks:
@@ -12,6 +12,7 @@ Asqatasun 4.1.0, 2018-0x-xx
   - @allrib          for [PR #223](https://github.com/Asqatasun/Asqatasun/issues/223)
                      and [PR #231](https://github.com/Asqatasun/Asqatasun/issues/231)
   - @selfthinker - Feature request [#202](https://github.com/Asqatasun/Asqatasun/issues/202)
+  - @jeremychauvet - Bug report: [#239](https://github.com/Asqatasun/Asqatasun/issues/239)
   - @mgifford    - User feedback: [#205](https://github.com/Asqatasun/Asqatasun/issues/205),
                                   [#206](https://github.com/Asqatasun/Asqatasun/issues/206)
                               and [#208](https://github.com/Asqatasun/Asqatasun/issues/208)
@@ -40,6 +41,7 @@ Asqatasun 4.1.0, 2018-0x-xx
 None
 
 ### Outdated dependencies
+- [#239 - PHPLoc repository no longer responds](https://github.com/Asqatasun/Asqatasun/issues/239)
 - [#234 - Upgraded itextpdf (5.5.13 instead of 5.5.8)](https://github.com/Asqatasun/Asqatasun/issues/234)
 - [#235 - Upgraded jhighlight (1.0.3 instead of 1.0)](https://github.com/Asqatasun/Asqatasun/issues/235)
 - [#221 - Upgraded mysql-connector-java (5.1.46 instead of 5.1.15)](https://github.com/Asqatasun/Asqatasun/issues/221)
@@ -47,7 +49,7 @@ None
 - [#232 - Upgraded maven-clean-plugin (3.0.0 instead of 2.5)](https://github.com/Asqatasun/Asqatasun/issues/232)
 - [#230 - Upgraded maven-jar-plugin (3.0.2 instead of 2.5)](https://github.com/Asqatasun/Asqatasun/issues/230)
 - [#229 - Upgraded maven-war-plugin (3.2.0 instead of 2.4)](https://github.com/Asqatasun/Asqatasun/issues/229)
-- [#219 - Upgraded maven-surefire-plugin (2.21.0 instead of 2.17)](https://github.com/Asqatasun/Asqatasun/issues/219)
+- [#245 - Upgraded maven-surefire-plugin (3.0.0-M1 instead of 2.17)](https://github.com/Asqatasun/Asqatasun/issues/245)
 - [#199 - Upgraded maven-compiler-plugin (3.7.0 instead of 3.1)](https://github.com/Asqatasun/Asqatasun/issues/199)
 
 ### Bugs
@@ -55,6 +57,7 @@ None
 - [#183 - Fixed build_and_run-with-docker.sh: "-t" option is used 2 times](https://github.com/Asqatasun/Asqatasun/issues/183)
 - [#142 - Fixed SQL Procedure delete-audit-by-id](https://github.com/Asqatasun/Asqatasun/issues/142)
 - [#149 - Fixed install.sh: tomcat parameters are missing](https://github.com/Asqatasun/Asqatasun/issues/149)
+- [#243 - Fixed Build on debian/ubuntu: failed to execute goal maven-surefire](https://github.com/Asqatasun/Asqatasun/issues/243)
 - Enhanced pre-requisites to allow database name containing hyphen "-"
 - Webapp:
     - [#126 - Create a contract pointing to an internal URL, even if the domain does not end with a valid gTLD](https://github.com/Asqatasun/Asqatasun/issues/126)
@@ -81,6 +84,7 @@ None
 - [#168 - Tar.gz - CHANGELOG and README files in html format](https://github.com/Asqatasun/Asqatasun/issues/168)
 - [#45  - Tar.gz - Documentation files in html format](https://github.com/Asqatasun/Asqatasun/issues/45)
 - [#152 - Dockerfile: add HEALTHCHECK instruction](https://github.com/Asqatasun/Asqatasun/issues/152)
+- [#241 - Added some information to the MANIFEST.MF files : commit, buid timestamp](https://github.com/Asqatasun/Asqatasun/issues/241)
 - Added some maven report plugins:
     - [#185 - Unit tests coverage report (Jacocoo)](https://github.com/Asqatasun/Asqatasun/issues/185)
     - [#155 - OWASP Dependency-Check](https://github.com/Asqatasun/Asqatasun/issues/155)
