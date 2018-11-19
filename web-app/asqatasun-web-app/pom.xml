@@ -200,7 +200,7 @@
             <version>1.5.2</version>
         </dependency>
 	<dependency>
-            <groupId>com.uwyn</groupId>
+            <groupId>org.codelibs</groupId>
             <artifactId>jhighlight</artifactId>
         </dependency>
 
