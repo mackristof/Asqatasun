@@ -40,6 +40,20 @@
             <distribution>manual</distribution>
         </license>
     </licenses>
+    <scm>
+        <connection>scm:git:https://github.com/Asqatasun/Asqatasun.git</connection>
+        <url>https://github.com/Asqatasun/Asqatasun</url>
+        <developerConnection>scm:git:git@github.com:Asqatasun/Asqatasun.git</developerConnection>
+        <tag>HEAD</tag>
+    </scm>
+    <issueManagement>
+        <system>github</system>
+        <url>https://github.com/Asqatasun/Asqatasun/issues</url>
+    </issueManagement>
+    <ciManagement>
+        <system>travis-ci</system>
+        <url>https://travis-ci.org/Asqatasun/Asqatasun</url>
+    </ciManagement>
     <prerequisites>         <!--    Maven 3.1 is required to use the following plugin:   -->
         <maven>3.1</maven>  <!--    ............  org.owasp:dependency-check-maven       -->
     </prerequisites>        <!--    The following command line indicates
