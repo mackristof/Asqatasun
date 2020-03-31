@@ -15,8 +15,6 @@ MAINTAINER Matthieu Faure <mfaure@asqatasun.org>
 USER root
 ENV  \
     DEBIAN_FRONTEND=noninteractive                                                              \
-    ASQA_REPOS=https://raw.githubusercontent.com/Asqatasun/Asqatasun/                           \
-    ASQA_PREREQ_SQL_PATH=release-4.1/web-app/tgol-resources/src/main/resources/installation/    \
     ASQA_PREREQ_SQL_FILENAME=pre-requisites-SQL-ubuntu-1804-docker.sh                           \
     # XVFB
     XVFB_CMD="/usr/bin/Xvfb :99 -screen 0 1280x1024x24 -nolisten tcp"                           \
@@ -57,8 +55,6 @@ RUN  apt-get update                              && \
      echo "mysql-server mysql-server/root_password_again password ${MYSQL_ROOT_PASSWD}" | debconf-set-selections && \
      apt-get -y --no-install-recommends  install    \
         mariadb-server                           && \
-     apt-get clean                               && \
-     apt-get autoremove                          && \
      rm -rf  /var/lib/apt/lists/*
 
 
@@ -69,26 +65,25 @@ RUN  apt-get update                              && \
 #
 # ##########################################################
 
-#RUN
-     # XVFB
-#     "${XVFB_CMD}"                                                        && \
-     # Tomcat config
-#     ln -s /usr/share/java/mysql-connector-java.jar "${TOMCAT_LIB_DIR}/mysql-connector-java.jar"
+RUN \
+    # Tomcat (really useful?)
+    #/bin/ln -s /usr/share/java/mysql-connector-java.jar "${TOMCAT_LIB_DIR}/mysql-connector-java.jar" && \
+    # Xvfb
+    /usr/bin/Xvfb :99 -screen 0 1280x1024x24 -nolisten tcp &
      # Firefox
 WORKDIR "${FIREFOX_PARENT_DIR}"
 RUN  wget -q "${FIREFOX_URL1}${FIREFOX_URL2}"                               && \
      tar xvfj "${FIREFOX_BASENAME}.tar.bz2"                                 && \
      rm "${FIREFOX_BASENAME}.tar.bz2"
+
 WORKDIR "/root"
-RUN  \
-     # pre-requisites-SQL-ubuntu-1804.sh
-     wget  ${ASQA_REPOS}${ASQA_PREREQ_SQL_PATH}${ASQA_PREREQ_SQL_FILENAME}  && \
-     chmod +x ${ASQA_PREREQ_SQL_FILENAME}                                   && \
-     ./${ASQA_PREREQ_SQL_FILENAME}                                          && \
-     rm -f  ${ASQA_PREREQ_SQL_FILENAME}                                     && \
-     apt-get clean                                                          && \
-     apt-get autoremove                                                     && \
-     rm -rf  /var/lib/apt/lists/*
+ADD "${ASQA_PREREQ_SQL_FILENAME}" /root
+#RUN  \
+#     # pre-requisites-SQL-ubuntu-1804.sh
+#     "./${ASQA_PREREQ_SQL_FILENAME}"
+
+CMD tail -f /var/log/mysql.log
+
 
 #CMD  systemctl start mysql   && \
 #     sleep   5               && \
@@ -96,7 +91,7 @@ RUN  \
 #     systemctl start tomcat7 ;  \
 #     tail -f /var/log/tomcat7/catalina.out
 
-CMD  service mysql start                            && \
-     sleep   5                                      && \
-     tail -f /var/log/mysql.err   \
-             /var/log/mysql.log
+#CMD  service mysql start                            && \
+#     sleep   5                                      && \
+#     tail -f /var/log/mysql.err   \
+#             /var/log/mysql.log
