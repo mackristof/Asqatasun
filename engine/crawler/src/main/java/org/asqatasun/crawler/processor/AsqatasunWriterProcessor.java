@@ -26,7 +26,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.regex.Pattern;
 import org.apache.commons.io.IOUtils;
-import org.apache.log4j.Logger;
 import org.archive.io.RecordingInputStream;
 import org.archive.modules.CrawlURI;
 import org.archive.modules.Processor;
@@ -34,6 +33,7 @@ import org.archive.net.UURI;
 import org.asqatasun.crawler.ContentWriter;
 import org.asqatasun.crawler.extractor.listener.ExtractorCSSListener;
 import org.asqatasun.crawler.extractor.listener.ExtractorHTMLListener;
+import org.slf4j.LoggerFactory;
 
 /**
  * Processor module that convert the results of successful fetches to
@@ -139,13 +139,13 @@ public class AsqatasunWriterProcessor extends Processor
     @Override
     protected boolean shouldProcess(CrawlURI curi) {
         boolean isSuccess = isSuccess(curi);
-        Logger.getLogger(this.getClass()).debug("should process? " + curi.getURI() + " with mime type " + curi.getContentType() + " " + isSuccess);
+        LoggerFactory.getLogger(this.getClass()).debug("should process? " + curi.getURI() + " with mime type " + curi.getContentType() + " " + isSuccess);
         return isSuccess;
     }
     
     @Override
     protected void innerProcess(CrawlURI curi) {
-        Logger.getLogger(this.getClass()).debug("inner process? " + curi.getURI() );
+        LoggerFactory.getLogger(this.getClass()).debug("inner process? " + curi.getURI() );
         UURI uuri = curi.getUURI(); // Current URI.
 
         // Only http and https schemes are supported.
@@ -172,26 +172,26 @@ public class AsqatasunWriterProcessor extends Processor
         IOUtils.closeQuietly(recis);
     }
 
-    /**
-     * 
-     * @param curi
-     */
-    @Override
-    public synchronized void computeResource(CrawlURI curi) {
-        Logger.getLogger(this.getClass()).debug("compute resource? " + curi.getURI());
-        extractorHTMLListener.computeResource(curi);
-    }
-
-    /**
-     * In case of css extractred from another css, we combine the child
-     * content with its css parents. Each CSS resource has to be associated with
-     * a HTML content. By keeping this relation, we can combine a child CSS
-     * with the HTML contents combined with its parents.
-     * @param curi
-     */
-    @Override
-    public synchronized void computeCSSResource(CrawlURI curi) {
-        this.extractorCSSListener.computeCSSResource(curi);
-    }
+//    /**
+//     *
+//     * @param curi
+//     */
+//    @Override
+//    public synchronized void computeResource(CrawlURI curi) {
+//        LoggerFactory.getLogger(this.getClass()).debug("compute resource? " + curi.getURI());
+//        extractorHTMLListener.computeResource(curi);
+//    }
+//
+//    /**
+//     * In case of css extractred from another css, we combine the child
+//     * content with its css parents. Each CSS resource has to be associated with
+//     * a HTML content. By keeping this relation, we can combine a child CSS
+//     * with the HTML contents combined with its parents.
+//     * @param curi
+//     */
+//    @Override
+//    public synchronized void computeCSSResource(CrawlURI curi) {
+//        this.extractorCSSListener.computeCSSResource(curi);
+//    }
 
 }

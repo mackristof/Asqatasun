@@ -21,7 +21,7 @@
  */
 package org.asqatasun.crawler.util;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang.StringUtils;
 
 /**
  * Overriding in this class the buildRegexp method to format a regular

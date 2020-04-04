@@ -38,7 +38,6 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import org.apache.log4j.Logger;
 import org.archive.crawler.event.CrawlStateEvent;
 import org.archive.crawler.framework.CrawlController;
 import org.archive.crawler.framework.CrawlController.State;
@@ -53,6 +52,8 @@ import org.asqatasun.crawler.extractor.listener.ExtractorHTMLListener;
 import org.asqatasun.crawler.processor.AsqatasunWriterProcessor;
 import org.asqatasun.crawler.util.CrawlConfigurationUtils;
 import org.asqatasun.entity.parameterization.Parameter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationListener;
 import org.w3c.dom.Document;
@@ -72,7 +73,7 @@ import org.xml.sax.SAXException;
  */
 public class AsqatasunCrawlJob implements ApplicationListener<CrawlStateEvent>{
 
-    private static final Logger LOGGER = Logger.getLogger(AsqatasunCrawlJob.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AsqatasunCrawlJob.class);
     private static final String WRITER_BEAN_NAME = "asqatasunWriter";
     private static final String DECIDE_RULE_SEQUENCE_BEAN_NAME = "scope";
     private File currentJobOutputDir;
@@ -199,7 +200,7 @@ public class AsqatasunCrawlJob implements ApplicationListener<CrawlStateEvent>{
                 LOGGER.debug("Request crawl start");
                 if (cc != null) {
                     cc.requestCrawlStart();
-                    LOGGER.debug(cc.getState());
+                    LOGGER.debug(cc.getState().toString());
                     LOGGER.debug("crawl start requested");
                 }
             }
@@ -264,20 +265,20 @@ public class AsqatasunCrawlJob implements ApplicationListener<CrawlStateEvent>{
             transformer.transform(source, result);
 
         } catch (IOException | ParserConfigurationException | SAXException ex) {
-            LOGGER.error(ex);
+            LOGGER.error("problem", ex);
             throw new CrawlerException(ex);
         } catch (TransformerConfigurationException ex) {
-            LOGGER.error(ex);
+            LOGGER.error("problem", ex);
             throw new CrawlerException(ex);
         } catch (TransformerException ex) {
-            LOGGER.error(ex);
+            LOGGER.error("problem", ex);
             throw new CrawlerException(ex);
         } finally {
             if (in != null) {
                 try {
                     in.close();
                 } catch (IOException ex) {
-                    LOGGER.error(ex);
+                    LOGGER.error("problem", ex);
                     throw new CrawlerException(ex);
                 }
             }
@@ -285,7 +286,7 @@ public class AsqatasunCrawlJob implements ApplicationListener<CrawlStateEvent>{
                 try {
                     fw.close();
                 } catch (IOException ex) {
-                    LOGGER.error(ex);
+                    LOGGER.error("problem", ex);
                     throw new CrawlerException(ex);
                 }
             }

@@ -23,8 +23,9 @@ package org.asqatasun.crawler.util;
 
 import java.util.regex.Pattern;
 import javax.xml.xpath.XPathExpressionException;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.commons.lang.StringUtils;
+
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -48,13 +49,13 @@ public abstract class HeritrixRegexpParameterValueModifier extends HeritrixParam
     Document modifyDocument(Document document, String value, String url) {
         try {
             Node node = getNodeFromXpath(document);
-            Logger.getLogger(HeritrixParameterValueModifier.class.getName()).debug(node + " value " + value);
+            LoggerFactory.getLogger(HeritrixParameterValueModifier.class.getName()).debug(node + " value " + value);
             String[] regexpTab = value.split(";");
             for (String regexpTab1 : regexpTab) {
                 addRegexpAsParameter(regexpTab1, node, document, url);
             }
         } catch (XPathExpressionException xee) {
-            Logger.getLogger(HeritrixParameterValueModifier.class.getName()).warn(xee);
+            LoggerFactory.getLogger(HeritrixParameterValueModifier.class.getName()).warn("problem ",xee);
         }
         return document;
     }
@@ -65,7 +66,7 @@ public abstract class HeritrixRegexpParameterValueModifier extends HeritrixParam
         }
         String builtRegexp;
         builtRegexp = buildRegexp(regexp, url);
-        Logger.getLogger(HeritrixParameterValueModifier.class.getName()).debug(" builtRegexp " + builtRegexp);
+        LoggerFactory.getLogger(HeritrixParameterValueModifier.class.getName()).debug(" builtRegexp " + builtRegexp);
         if (StringUtils.isNotBlank(builtRegexp) && compileRegexp(regexp)) {
             Element element = document.createElement(getElementName());
             element.appendChild(document.createTextNode(builtRegexp));

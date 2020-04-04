@@ -33,9 +33,10 @@ import java.util.NoSuchElementException;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageWriter;
 import org.apache.commons.io.IOUtils;
-import org.apache.log4j.Logger;
 import org.archive.io.RecordingInputStream;
 import org.mozilla.universalchardet.UniversalDetector;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -43,7 +44,7 @@ import org.mozilla.universalchardet.UniversalDetector;
  */
 public final class CrawlUtils {
 
-    private static final Logger LOGGER = Logger.getLogger(CrawlUtils.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(CrawlUtils.class);
     private static final String DEFAULT_CHARSET = "UTF-8";
     private static final int BYTE_BUFFER_SIZE = 1000;
     private static final String DEFAULT_IMG_EXTENSION = "jpg";

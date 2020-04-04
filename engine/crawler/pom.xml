@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.asqatasun</groupId>
         <artifactId>engine</artifactId>
-        <version>4.1.0-SNAPSHOT</version>
+        <version>5.0-SNAPSHOT</version>
     </parent>
     <artifactId>asqatasun-crawler</artifactId>
     <name>crawler</name>
@@ -30,18 +30,20 @@
     <dependencies>
         <dependency>
             <groupId>${asqatasunGroupId}</groupId>
-            <artifactId>asqatasun-audit</artifactId>
+            <artifactId>asqatasun-api</artifactId>
         </dependency>
         <dependency>
             <groupId>${asqatasunGroupId}</groupId>
             <artifactId>asqatasun-persistence</artifactId>
             <scope>test</scope>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.archive.heritrix/heritrix-engine -->
         <dependency>
-            <groupId>${heritrixGroupId}</groupId>
+            <groupId>org.archive.heritrix</groupId>
             <artifactId>heritrix-engine</artifactId>
-            <scope>compile</scope>
+            <version>3.1.1</version>
         </dependency>
+
         <dependency>
             <groupId>com.googlecode.juniversalchardet</groupId>
             <artifactId>juniversalchardet</artifactId>
@@ -54,12 +56,11 @@
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
         </dependency>
-	<dependency>
-            <groupId>commons-lang</groupId>
-            <artifactId>commons-lang</artifactId>
+	    <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
             <scope>runtime</scope>
         </dependency>
-
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>

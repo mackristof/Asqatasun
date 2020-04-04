@@ -27,10 +27,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.apache.commons.httpclient.URIException;
-import org.apache.log4j.Logger;
 import org.archive.net.UURIFactory;
 import org.asqatasun.entity.parameterization.Parameter;
 import org.asqatasun.util.http.HttpRequestHandler;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 
 /**
@@ -141,7 +141,7 @@ public class CrawlConfigurationUtils {
      * @return the document with the parameter modified
      */
     public Document modifyHeritrixParameter(Document document, Parameter parameter, String url) {
-        Logger.getLogger(this.getClass()).debug(parameter.getValue() + " " + parameter.getParameterElement().getParameterElementCode());
+        LoggerFactory.getLogger(this.getClass()).debug(parameter.getValue() + " " + parameter.getParameterElement().getParameterElementCode());
         HeritrixConfigurationModifier hpf =
                 paramModifierMap.get(parameter.getParameterElement().getParameterElementCode());
         return modifyValue(hpf, document, parameter.getValue(), url);
@@ -157,7 +157,7 @@ public class CrawlConfigurationUtils {
      */
     public Document modifyValue(HeritrixConfigurationModifier hcm, Document document, String value, String url) {
         if (hcm != null && !value.equals("-1")) {
-            Logger.getLogger(this.getClass()).debug("Modifier found for value " + value);
+            LoggerFactory.getLogger(this.getClass()).debug("Modifier found for value " + value);
             return hcm.modifyDocument(document, value, url);
         } else {
             return document;

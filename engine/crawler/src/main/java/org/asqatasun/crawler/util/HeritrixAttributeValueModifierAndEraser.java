@@ -22,8 +22,9 @@
 package org.asqatasun.crawler.util;
 
 import javax.xml.xpath.XPathExpressionException;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -34,7 +35,7 @@ import org.w3c.dom.Node;
  */
 public class HeritrixAttributeValueModifierAndEraser extends DefaultHeritrixConfigurationModifier{
 
-    private static final Logger LOGGER = Logger.getLogger(HeritrixAttributeValueModifierAndEraser.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(HeritrixAttributeValueModifierAndEraser.class);
     private static final String DEFAULT_ATTRIBUTE_NAME = "value";
 
     public HeritrixAttributeValueModifierAndEraser(){
@@ -59,7 +60,7 @@ public class HeritrixAttributeValueModifierAndEraser extends DefaultHeritrixConf
                 parentNode.getParentNode().removeChild(parentNode);
             }
         } catch (XPathExpressionException ex) {
-            Logger.getLogger(HeritrixParameterValueModifier.class.getName()).warn(ex);
+            LoggerFactory.getLogger(HeritrixParameterValueModifier.class.getName()).warn("problem", ex);
         }
         return document;
     }

@@ -29,8 +29,8 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.asqatasun.entity.service.subject.WebResourceDataService;
 import org.asqatasun.entity.subject.*;
-import org.asqatasun.sdk.entity.dao.GenericDAO;
-import org.asqatasun.sdk.entity.factory.GenericFactory;
+import org.asqatasun.entity.dao.GenericDAO;
+import org.asqatasun.entity.GenericFactory;
 
 /**
  *

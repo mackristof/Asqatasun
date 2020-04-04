@@ -22,7 +22,6 @@
 package org.asqatasun.service;
 
 import java.util.*;
-import org.apache.log4j.Logger;
 import org.asqatasun.crawler.Crawler;
 import org.asqatasun.crawler.CrawlerFactory;
 import org.asqatasun.entity.audit.Audit;
@@ -31,6 +30,8 @@ import org.asqatasun.entity.service.audit.AuditDataService;
 import org.asqatasun.entity.service.audit.ContentDataService;
 import org.asqatasun.entity.service.subject.WebResourceDataService;
 import org.asqatasun.entity.subject.WebResource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.asqatasun.entity.audit.Content;
 import org.asqatasun.entity.audit.RelatedContent;
@@ -44,7 +45,7 @@ import org.asqatasun.entity.service.parameterization.ParameterDataService;
  */
 public class CrawlerServiceImpl implements CrawlerService {
 
-    private static final Logger LOGGER = Logger.getLogger(CrawlerServiceImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(CrawlerServiceImpl.class);
     private static final int PROCESS_WINDOW = 20;
 
     /**

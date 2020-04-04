@@ -267,6 +267,11 @@
 <!--                <enabled>false</enabled>-->
 <!--            </snapshots>-->
 <!--        </repository>-->
+        <repository>
+            <!-- used to build crawler module-->
+            <id>archive</id>
+            <url>http://builds.archive.org/maven2/</url>
+        </repository>
     </repositories>
 
     <build>

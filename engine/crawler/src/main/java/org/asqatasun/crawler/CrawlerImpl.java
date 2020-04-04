@@ -26,8 +26,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.*;
 import java.util.regex.Pattern;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.commons.lang.StringUtils;
 import org.archive.io.GzipHeader;
 import org.archive.io.RecordingInputStream;
 import org.archive.modules.CrawlURI;
@@ -43,6 +42,8 @@ import org.asqatasun.entity.service.subject.WebResourceDataService;
 import org.asqatasun.entity.subject.Page;
 import org.asqatasun.entity.subject.Site;
 import org.asqatasun.entity.subject.WebResource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
@@ -50,7 +51,7 @@ import org.asqatasun.entity.subject.WebResource;
  */
 public class CrawlerImpl implements Crawler, ContentWriter {
 
-    private static final Logger LOGGER = Logger.getLogger(CrawlerImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(CrawlerImpl.class);
     private static final String OPEN_HTML_TAG = "<html";
     private static final String END_HTML_TAG = "</html>";
     private static final int RETRIEVE_WINDOW = 1000;
@@ -528,11 +529,11 @@ public class CrawlerImpl implements Crawler, ContentWriter {
         List<Content> emptyContentSet;
         Integer nbOfContent = contentDataService.getNumberOfOrphanRelatedContent(mainWebResource).intValue();
         Integer i = 0;
-        Logger.getLogger(CrawlerImpl.class.getName()).debug("remove Orphan related contents  " + nbOfContent + " elements");
+        LoggerFactory.getLogger(CrawlerImpl.class.getName()).debug("remove Orphan related contents  " + nbOfContent + " elements");
         while (i.compareTo(nbOfContent) < 0) {
             emptyContentSet = contentDataService.getOrphanRelatedContentList(mainWebResource, 0, RETRIEVE_WINDOW);
             for (Content content : emptyContentSet) {
-                Logger.getLogger(CrawlerImpl.class.getName()).debug("Removing " + content.getURI());
+                LoggerFactory.getLogger(CrawlerImpl.class.getName()).debug("Removing " + content.getURI());
                 contentDataService.delete(content.getId());
             }
             i = i + RETRIEVE_WINDOW;
@@ -540,7 +541,7 @@ public class CrawlerImpl implements Crawler, ContentWriter {
 
         nbOfContent = contentDataService.getNumberOfOrphanContent(mainWebResource).intValue();
         i = 0;
-        Logger.getLogger(CrawlerImpl.class.getName()).debug("remove Orphan SSPs  " + nbOfContent + " elements");
+        LoggerFactory.getLogger(CrawlerImpl.class.getName()).debug("remove Orphan SSPs  " + nbOfContent + " elements");
         while (i.compareTo(nbOfContent) < 0) {
             emptyContentSet = contentDataService.getOrphanContentList(mainWebResource, i, RETRIEVE_WINDOW);
             for (Content content : emptyContentSet) {
@@ -629,16 +630,16 @@ public class CrawlerImpl implements Crawler, ContentWriter {
             Elements base = Jsoup.parse(((SSP) content).getSource()).select(BASE_CSS_LIKE_QUERY);
             if (!base.isEmpty()) {
                 if (StringUtils.endsWith(base.first().attr("href"), "/")) {
-                    href = StringUtils.join(base.first().attr("href"), href.substring(1));
+                    href = base.first().attr("href") + href.substring(1);
                 } else {
-                    href = StringUtils.join(base.first().attr("href") + href);
+                    href = base.first().attr("href") + href;
                 }
                 LOGGER.debug("(BASE CASE) The concat href " + href);
             } else {
                 URI contractUri;
                 try {
                     contractUri = new URI(content.getURI());
-                    href = StringUtils.join(contractUri.getScheme(), "://", contractUri.getHost(), href);
+                    href = contractUri.getScheme() +  "://" + contractUri.getHost() + href;
                     LOGGER.debug("(NORMAL CASE) The concat href " + href);
                 } catch (URISyntaxException ex) {
                     LOGGER.error("Error when creating uri object with url " + content.getURI());

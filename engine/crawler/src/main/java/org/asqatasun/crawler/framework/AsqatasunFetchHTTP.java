@@ -22,12 +22,14 @@
 package org.asqatasun.crawler.framework;
 
 import org.apache.commons.httpclient.HttpConnection;
-import org.apache.log4j.Logger;
 import org.archive.httpclient.HttpRecorderMethod;
 import org.archive.modules.CrawlURI;
 import org.archive.modules.fetcher.FetchHTTP;
 import org.asqatasun.crawler.frontier.AsqatasunBdbFrontier;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import static org.slf4j.LoggerFactory.*;
 
 /**
  * @author jkowalczyk
@@ -52,16 +54,16 @@ public class AsqatasunFetchHTTP extends FetchHTTP{
     @Override
     protected boolean checkMidfetchAbort(CrawlURI curi, HttpRecorderMethod method, HttpConnection conn) {
         boolean checkMidfetchAbort= super.checkMidfetchAbort(curi, method, conn);
-        Logger.getLogger(this.getClass()).debug("curi.isPrerequisite() "+curi.isPrerequisite());
-        Logger.getLogger(this.getClass()).debug("curi.getContentType() "+curi.getContentType());
-        Logger.getLogger(this.getClass()).debug("checkMidfetchAbort "+checkMidfetchAbort);
+        getLogger(this.getClass()).debug("curi.isPrerequisite() "+curi.isPrerequisite());
+        getLogger(this.getClass()).debug("curi.getContentType() "+curi.getContentType());
+        getLogger(this.getClass()).debug("checkMidfetchAbort "+checkMidfetchAbort);
         // the counter is incremented when the curi is seen as success
         if (curi.getURI().endsWith("robots.txt")) {
             frontier.decrementSucceededFetchCounter();
-            Logger.getLogger(this.getClass()).debug("Robots.txt encountered leads to to counter begin decremented");
+            getLogger(this.getClass()).debug("Robots.txt encountered leads to to counter begin decremented");
         } else if  (checkMidfetchAbort && curi.isSuccess()) {
             frontier.decrementSucceededFetchCounter();
-            Logger.getLogger(this.getClass()).debug("succeeded Fetch Counter decremented due to MidfetchAbort");
+            getLogger(this.getClass()).debug("succeeded Fetch Counter decremented due to MidfetchAbort");
         }
         
         return checkMidfetchAbort;

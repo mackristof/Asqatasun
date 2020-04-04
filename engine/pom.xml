@@ -35,7 +35,7 @@
         <module>logging</module>
         <module>scenarioloader</module>
         <module>asqatasun-engine</module>
-
+        <module>crawler</module>
         <module>asqatasun-api</module>
         <module>asqatasun-model</module>
         <module>asqatasun-services</module>

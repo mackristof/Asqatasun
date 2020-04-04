@@ -28,8 +28,8 @@ import java.util.Map;
 import org.asqatasun.entity.audit.Audit;
 import org.asqatasun.entity.audit.AuditStatus;
 import org.asqatasun.entity.service.audit.AuditDataService;
-import org.asqatasun.sdk.entity.dao.GenericDAO;
-import org.asqatasun.sdk.entity.factory.GenericFactory;
+import org.asqatasun.entity.dao.GenericDAO;
+import org.asqatasun.entity.GenericFactory;
 
 /**
  *

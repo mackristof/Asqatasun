@@ -5,11 +5,11 @@
 package org.asqatasun.crawler.framework;
 
 import java.util.List;
-import org.apache.log4j.Logger;
 import org.archive.modules.CrawlURI;
 import org.archive.modules.deciderules.DecideResult;
 import org.archive.modules.deciderules.DecideRule;
 import org.archive.modules.deciderules.DecideRuleSequence;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -29,7 +29,7 @@ public class AsqatasunDecideRuleSequenceExtended extends DecideRuleSequence {
             DecideRule rule = rules.get(i);
             if (rule.onlyDecision(uri) != result) {
                 DecideResult r = rule.decisionFor(uri);
-                Logger.getLogger(this.getClass()).debug("DecideRule #" + i + " "
+                LoggerFactory.getLogger(this.getClass()).debug("DecideRule #" + i + " "
                         + rule.getClass().getName() + " returned " + r + " for url: " + uri);
                 if (r != DecideResult.NONE) {
                     result = r;

@@ -30,8 +30,8 @@ import org.asqatasun.entity.parameterization.ParameterElement;
 import org.asqatasun.entity.parameterization.ParameterFamily;
 import org.asqatasun.entity.parameterization.ParameterImpl;
 import org.asqatasun.entity.service.parameterization.ParameterDataService;
-import org.asqatasun.sdk.entity.dao.GenericDAO;
-import org.asqatasun.sdk.entity.factory.GenericFactory;
+import org.asqatasun.entity.dao.GenericDAO;
+import org.asqatasun.entity.GenericFactory;
 
 /**
  *
@@ -109,6 +109,16 @@ public class MockParameterDataService implements ParameterDataService{
     @Override
     public Set<Parameter> updateParameter(Set<Parameter> set, Parameter prmtr) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Set<Parameter> getParameterSetFromAuditLevel(String ref, String level) {
+        return null;
+    }
+
+    @Override
+    public Set<Parameter> getAuditPageParameterSet(Set<Parameter> defaultParameterSet) {
+        return null;
     }
 
     @Override
